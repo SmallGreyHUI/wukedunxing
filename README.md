@@ -111,6 +111,12 @@ npm run preview
 - 认证相关接口在 `web_api` 不可用时可由仓库内置 Node 服务兜底
 - 任务、工具、报告模块在后端不可用时会自动回退到前端演示流
 
+## 使用说明
+-安全控制页面用于查询观察各个项目的运行日志
+-任务创建页面创建新项目，要先选择新的靶子属于哪个靶场，再输入靶子所在的靶场IP，AI会在交互界面创建了自动渗透测试的工作台，选择AI运行模式（assist/agent/crew），根据任务难度，选择智谱-4.7或5.1版本，避免消耗资源，然后在聊天框中输入靶机IP和端口号，让大模型进行规划和测试，最终生成报告
+-报告中心页面选择我们运行过的项目，点击生成报告，会在右侧结构化预览中生成报告的具体形式，此时可以点生成MarkDown文件或pdf文件将报告保存为外部文件形式
+-系统设置页面可以对模型名称和API Key进行填写，可以使用自己想要使用的大模型保存到系统当中
+
 ## 部署说明
 
 ### Vercel
@@ -131,36 +137,27 @@ npm run preview
 - 若接入赛方后端，可按 `api-spec.md` 继续扩展剩余接口
 
 后端
-<div align="center">
-
-<img src="assets/pentestagent-logo.png" alt="PentestAgent Logo" width="220" style="margin-bottom: 20px;"/>
 
 # PentestAgent
 ### AI Penetration Testing
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/) [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE.txt) [![Version](https://img.shields.io/badge/Version-0.2.0-orange.svg)](https://github.com/GH05TCREW/pentestagent/releases) [![Security](https://img.shields.io/badge/Security-Penetration%20Testing-red.svg)](https://github.com/GH05TCREW/pentestagent) [![MCP](https://img.shields.io/badge/MCP-Compatible-purple.svg)](https://github.com/GH05TCREW/pentestagent)
-
-</div>
-
-https://github.com/user-attachments/assets/a67db2b5-672a-43df-b709-149c8eaee975
-
-## Requirements
+## 环境要求
 
 - Python 3.10+
 - API key for OpenAI, Anthropic, or other LiteLLM-supported provider
 
-## Install
+## 安装
 
 ```bash
-# Clone
+# 克隆
 git clone https://github.com/GH05TCREW/pentestagent.git
 cd pentestagent
 
-# Setup (creates venv, installs deps)
+# 设置 (创建虚拟环境，安装依赖)
 .\scripts\setup.ps1   # Windows
 ./scripts/setup.sh    # Linux/macOS
 
-# Or manual
+# 手动设置
 python -m venv venv
 .\venv\Scripts\Activate.ps1  # Windows
 source venv/bin/activate     # Linux/macOS
@@ -168,10 +165,9 @@ pip install -e ".[all]"
 playwright install chromium  # Required for browser tool
 ```
 
-## Configure
+## 配置
 
-Create `.env` in the project root:
-
+在醒目根目录创建.env文件：
 ```
 OPENAI_API_KEY=your-zai-compatible-key
 TAVILY_API_KEY=tvly-...  # optional, enables web_search tool
@@ -194,7 +190,7 @@ pentestagent run -t 192.168.1.1 -m zai/glm-4.7 "recon target"
 
 在 TUI 中可用 `/model` 查看当前模型，用 `/model zai/glm-4.7` 或 `/model zai/glm-5.1` 进行切换。
 
-## Run
+## 运行
 
 ```bash
 pentestagent                    # Launch TUI
@@ -202,17 +198,15 @@ pentestagent -t 192.168.1.1     # Launch with target
 pentestagent --docker           # Run tools in Docker container
 ```
 
-## Frontend API Bridge
+## 前端API桥接
 
-If you want to connect a separate Vue frontend to PentestAgent, start the built-in
-frontend-compatible API server:
+如果你想将独立的 Vue 前端连接到 PentestAgent，请启动内置的兼容前端的 API 服务：
 
 ```bash
 pentestagent web_api --host 0.0.0.0 --port 8000
 ```
 
-The server provides routes used by the dashboard, such as:
-
+该服务提供仪表板使用的路由，例如：
 - `POST /api/auth/login`
 - `GET/PUT /api/settings`
 - `GET/POST /api/tasks`
@@ -227,52 +221,53 @@ Data is stored under `workspaces/frontend_api/`.
 
 Run tools inside a Docker container for isolation and pre-installed pentesting tools.
 
-### Option 1: Pull pre-built image (fastest)
+### 选项1：拉取预构建镜像
 
 ```bash
-# Base image with nmap, netcat, curl
+# 包含 nmap, netcat, curl的基础镜像
 docker run -it --rm \
   -e ANTHROPIC_API_KEY=your-key \
   -e PENTESTAGENT_MODEL=claude-sonnet-4-20250514 \
   ghcr.io/gh05tcrew/pentestagent:latest
 
-# Kali image with metasploit, sqlmap, hydra, etc.
+# 包含 metasploit, sqlmap ,hydra 等的 Kali 镜像
 docker run -it --rm \
   -e ANTHROPIC_API_KEY=your-key \
   ghcr.io/gh05tcrew/pentestagent:kali
 ```
 
-### Option 2: Build locally
+### 选项 2: 本地构建
 
 ```bash
-# Build
+# 构建
 docker compose build
 
-# Run
+# 运行
 docker compose run --rm pentestagent
 
-# Or with Kali
+# 或使用 Kali
 docker compose --profile kali build
 docker compose --profile kali run --rm pentestagent-kali
 ```
 
-The container runs PentestAgent with access to Linux pentesting tools. The agent can use `nmap`, `msfconsole`, `sqlmap`, etc. directly via the terminal tool.
+容器运行 PentestAgent 并可以访问 Linux 渗透测试工具。 代理 (agent) 可以直接通过 terminal 工具使用 nmap、msfconsole、sqlmap 等。
 
-Requires Docker to be installed and running.
+需要安装并运行 Docker。
 
-## Modes
+## 模式
 
-PentestAgent has three modes, accessible via commands in the TUI:
+PentestAgent具有三种模式，可通过 TUI 中的命令访问：
 
-| Mode | Command | Description |
+| 模式| 命令 | 描述 |
 |------|---------|-------------|
 | Assist | `/assist <task>` | One single-shot instruction, with tool execution |
 | Agent | `/agent <task>` | Autonomous execution of a single task. |
 | Crew | `/crew <task>` | Multi-agent mode. Orchestrator spawns specialized workers. |
 | Interact | `/interact <task>` | Interactive mode. Chat with the agent, it will help you and guide during the pentesting procedure |
 
-### TUI Commands
+### TUI 命令
 
+|命令|描述|
 ```
 /assist <task>    One single-shot instruction.
 /agent <task>     Run autonomous agent on task
@@ -290,13 +285,13 @@ PentestAgent has three modes, accessible via commands in the TUI:
 /help             Show help (also /h, /?)
 ```
 
-Press `Esc` to stop a running agent. `Ctrl+Q` to quit.
+按 Esc 停止运行中的代理。按 Ctrl+Q 退出。
 
 ## Playbooks
 
-PentestAgent includes prebuilt **attack playbooks** for black-box security testing. Playbooks define a structured approach to specific security assessments.
+PentestAgent 包含用于黑盒安全测试的预构建 attack playbooks。Playbooks 为特定的安全评估定义了结构化的方法。 
 
-**Run a playbook:**
+**运行 playbook:**
 
 ```bash
 pentestagent run -t example.com --playbook thp3_web
@@ -304,16 +299,15 @@ pentestagent run -t example.com --playbook thp3_web
 
 ![Playbook Demo](assets/playbook.gif)
 
-## Tools
+## 工具
 
-PentestAgent includes built-in tools and supports MCP (Model Context Protocol) for extensibility.
+PentestAgent 包含内置工具，并支持 MCP (Model Context Protocol) 以实现扩展性。
+ 内置工具： terminal, browser, notes, web_search（需要 TAVILY_API_KEY）
 
-**Built-in tools:** `terminal`, `browser`, `notes`, `web_search` (requires `TAVILY_API_KEY`)
+### MCP 集成
 
-### MCP Integration
-
-PentestAgent supports MCP (Model Context Protocol) servers. Configure `mcp_servers.json` for any MCP servers they intend to use. Example
-config (place under `mcp_servers.json`):
+PentestAgent 支持 MCP (Model Context Protocol) 服务器。为计划使用的任何 MCP 服务器配置 mcp_servers.json。 
+配置示例（放置在 mcp_servers.json 下）：
 
 ```json
 {
@@ -329,7 +323,7 @@ config (place under `mcp_servers.json`):
 }
 ```
 
-### CLI Tool Management
+### CLI 工具管理
 
 ```bash
 pentestagent tools list         # List all tools
@@ -339,13 +333,13 @@ pentestagent mcp add <name> <command> [args...]  # Add MCP server
 pentestagent mcp test <name>    # Test MCP connection
 ```
 
-## Knowledge
+## 知识库
 
 - **RAG:** Place methodologies, CVEs, or wordlists in `pentestagent/knowledge/sources/` for automatic context injection.
 - **Notes:** Agents save findings to `loot/notes.json` with categories (`credential`, `vulnerability`, `finding`, `artifact`). Notes persist across sessions and are injected into agent context.
 - **Shadow Graph:** In Crew mode, the orchestrator builds a knowledge graph from notes to derive strategic insights (e.g., "We have credentials for host X").
 
-## Project Structure
+## 项目结构
 
 ```
 pentestagent/
@@ -360,7 +354,7 @@ pentestagent/
   tools/          # Built-in tools
 ```
 
-## Development
+## 开发
 
 ```bash
 pip install -e ".[dev]"

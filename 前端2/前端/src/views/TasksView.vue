@@ -25,7 +25,6 @@ const openTasks = computed(() =>
 const selectedTaskStatus = computed(() => String(store.selectedTask?.status || ''))
 const canPause = computed(() => selectedTaskStatus.value === '运行中')
 const canResume = computed(() => selectedTaskStatus.value === '已暂停')
-const canTerminate = computed(() => ['运行中', '已暂停'].includes(selectedTaskStatus.value))
 const aiRuntimeMap = ref({})
 const selectedTaskStreaming = computed(() => {
   const taskId = store.selectedTaskId
@@ -471,7 +470,7 @@ async function sendChatMessage() {
     } else if (selectedAiStatus.value === 'paused') {
       ElMessage.warning('任务已暂停，请先点击“恢复”')
     } else {
-      ElMessage.warning('任务未处于运行中，请先点击“重跑”或“恢复”')
+      ElMessage.warning('任务未处于运行中，请先点击“恢复”')
     }
     return
   }
@@ -660,8 +659,6 @@ async function sendChatMessage() {
             </el-select>
             <el-button :disabled="!canPause" @click="runTaskAction('pause')">暂停</el-button>
             <el-button :disabled="!canResume" @click="runTaskAction('resume')">恢复</el-button>
-            <el-button :disabled="!canTerminate" @click="runTaskAction('terminate')">终止</el-button>
-            <el-button @click="runTaskAction('rerun')">重跑</el-button>
             <el-button type="danger" plain @click="removeSelectedTask">删除</el-button>
           </div>
           <div class="task-heartbeat" :class="taskHeartbeatClass">

@@ -82,6 +82,8 @@ function startLocalMock() {
 function startPentestApi(pentestRoot) {
   const pythonCandidates = [
     process.env.PENTESTAGENT_PYTHON,
+    path.resolve(pentestRoot, 'venv', 'bin', 'python'),
+    path.resolve(pentestRoot, '.venv', 'bin', 'python'),
     path.resolve(frontendRoot, '..', '..', 'my_venv', 'bin', 'python'),
     path.resolve(frontendRoot, '..', 'my_venv', 'bin', 'python'),
     'python3',
