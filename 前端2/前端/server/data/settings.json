@@ -1,0 +1,12 @@
+{
+  "backendUrl": "http://192.168.159.132:8001",
+  "mcpEndpoint": "http://192.168.159.132:8001/mcp/health",
+  "knowledgeBasePath": "/opt/pentestagent/knowledge",
+  "targetHosts": [
+    "192.168.56.110 Vulhub-log4j",
+    "192.168.56.120 Bugku-demo"
+  ],
+  "apiKeyConfigured": false,
+  "apiKey": "",
+  "apiConfigured": false
+}

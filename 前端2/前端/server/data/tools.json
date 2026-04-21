@@ -1,0 +1,42 @@
+[
+  {
+    "id": "nmap",
+    "name": "Nmap",
+    "version": "7.95",
+    "status": true,
+    "args": "-sV -T4",
+    "category": "资产探测"
+  },
+  {
+    "id": "nuclei",
+    "name": "Nuclei",
+    "version": "3.2.1",
+    "status": true,
+    "args": "-severity critical,high,medium",
+    "category": "模板扫描"
+  },
+  {
+    "id": "dirsearch",
+    "name": "Dirsearch",
+    "version": "0.4.3",
+    "status": true,
+    "args": "-x 403,404",
+    "category": "目录扫描"
+  },
+  {
+    "id": "sqlmap",
+    "name": "SQLMap",
+    "version": "1.8.2",
+    "status": true,
+    "args": "--batch --risk=2",
+    "category": "注入检测"
+  },
+  {
+    "id": "whatweb",
+    "name": "WhatWeb",
+    "version": "0.5.5",
+    "status": false,
+    "args": "--aggression 3",
+    "category": "指纹识别"
+  }
+]
